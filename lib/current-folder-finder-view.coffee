@@ -5,6 +5,7 @@ fs = require 'fs'
 module.exports =
 class CurrentFolderFinderView extends SelectListView
   displayFiles: []
+  currentFolderPath: null
   
   initialize: ->
     super
@@ -25,12 +26,13 @@ class CurrentFolderFinderView extends SelectListView
     
   populate: ->
     @displayFiles.length = 0
-    currentFolderPath = path.dirname(atom.workspace.getActiveEditor().getPath())
+    unless @currentFolderPath?  
+      @currentFolderPath = path.dirname(atom.workspace.getActiveEditor().getPath())
     currentFileName = path.basename(atom.workspace.getActiveEditor().getPath())
                            
-    for file in fs.readdirSync(currentFolderPath)
-      fileFullPath = path.join(currentFolderPath, file)
-      if fs.statSync(fileFullPath).isFile() and file isnt currentFileName
+    for file in fs.readdirSync(@currentFolderPath)
+      fileFullPath = path.join(@currentFolderPath, file)
+      if file isnt currentFileName
         @displayFiles.push fileFullPath
           
     @setItems(@displayFiles)
@@ -42,9 +44,16 @@ class CurrentFolderFinderView extends SelectListView
         @div atom.project.relativize(item), class: 'secondary-line path no-icon'
   
   confirmed: (item) ->
-    atom.workspaceView.open item
+    stat = fs.statSync(item)
+    if stat.isFile()
+      atom.workspaceView.open item
+    else if stat.isDirectory()
+      @currentFolderPath = item
+      @populate()
+      
     
   toggle: ->
+    @currentFolderPath = null
     if @hasParent()
       @cancel()
     else
