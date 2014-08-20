@@ -1,0 +1,16 @@
+# See https://atom.io/docs/latest/creating-a-package#menus for more details
+'context-menu':
+  '.overlayer':
+      'Enable current-folder-finder': 'current-folder-finder:toggle'
+
+'menu': [
+  {
+    'label': 'Packages'
+    'submenu': [
+      'label': 'current-folder-finder'
+      'submenu': [
+        { 'label': 'Toggle', 'command': 'current-folder-finder:toggle' }
+      ]
+    ]
+  }
+]
