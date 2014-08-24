@@ -30,6 +30,9 @@ class CurrentFolderFinderView extends SelectListView
       @currentFolderPath = path.dirname(atom.workspace.getActiveEditor().getPath())
     currentFileName = path.basename(atom.workspace.getActiveEditor().getPath())
                            
+    # parent folder
+    @displayFiles.push path.dirname @currentFolderPath
+    
     for file in fs.readdirSync(@currentFolderPath)
       fileFullPath = path.join(@currentFolderPath, file)
       if file isnt currentFileName
