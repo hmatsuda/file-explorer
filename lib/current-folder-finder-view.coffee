@@ -31,7 +31,8 @@ class CurrentFolderFinderView extends SelectListView
     currentFileName = path.basename(atom.workspace.getActiveEditor().getPath())
                            
     # parent folder
-    @displayFiles.push path.dirname @currentFolderPath
+    if @currentFolderPath.split(path.sep).length > atom.project.getRootDirectory().getRealPathSync().split(path.sep).length
+      @displayFiles.push path.dirname @currentFolderPath
     
     for file in fs.readdirSync(@currentFolderPath)
       fileFullPath = path.join(@currentFolderPath, file)
@@ -41,10 +42,17 @@ class CurrentFolderFinderView extends SelectListView
     @setItems(@displayFiles)
 
   viewForItem: (item) ->
+    stat = fs.statSync(item)
     $$ ->
       @li class: 'two-lines', =>
-        @div path.basename(item), class: "primary-line file icon icon-file-text"
-        @div atom.project.relativize(item), class: 'secondary-line path no-icon'
+        if item is path.dirname(path.dirname(atom.workspace.getActiveEditor().getPath()))
+          @div "..", class: "primary-line file icon icon-file-directory"
+        else if stat.isDirectory()
+          @div path.basename(item), class: "primary-line file icon icon-file-directory"
+          @div atom.project.relativize(item), class: 'secondary-line path no-icon'
+        else 
+          @div path.basename(item), class: "primary-line file icon icon-file-text"
+          @div atom.project.relativize(item), class: 'secondary-line path no-icon'
   
   confirmed: (item) ->
     stat = fs.statSync(item)
