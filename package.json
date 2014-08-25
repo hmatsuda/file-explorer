@@ -3,7 +3,7 @@
   "main": "./lib/current-folder-finder",
   "version": "0.0.0",
   "description": "A short description of your package",
-  "activationEvents": ["current-folder-finder:toggle"],
+  "activationEvents": ["current-folder-finder:explore", "current-folder-finder:explore_current_folder"],
   "repository": "https://github.com/hmatsuda/current-folder-finder",
   "license": "MIT",
   "engines": {

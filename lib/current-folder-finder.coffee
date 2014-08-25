@@ -4,8 +4,11 @@ module.exports =
   CurrentFolderFinderView: null
 
   activate: (state) ->
-    atom.workspaceView.command 'current-folder-finder:toggle', =>
-      @createCurrentFolderFinderView().toggle()
+    atom.workspaceView.command 'current-folder-finder:explore', =>
+      @createCurrentFolderFinderView().toggle(true)
+
+    atom.workspaceView.command 'current-folder-finder:explore_current_folder', =>
+      @createCurrentFolderFinderView().toggle(false)
 
 
   deactivate: ->

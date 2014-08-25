@@ -63,8 +63,8 @@ class CurrentFolderFinderView extends SelectListView
       @populate()
       
     
-  toggle: ->
-    @currentFolderPath = null
+  toggle: (root) ->
+    @currentFolderPath = if root is true then atom.project.getRootDirectory().getRealPathSync() else null
     if @hasParent()
       @cancel()
     else

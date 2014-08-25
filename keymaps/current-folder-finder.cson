@@ -8,4 +8,5 @@
 # For more detailed documentation see
 # https://atom.io/docs/latest/advanced/keymaps
 '.workspace':
-  'alt-cmd-c': 'current-folder-finder:toggle'
+  'alt-cmd-e': 'current-folder-finder:explore'
+  'alt-cmd-c': 'current-folder-finder:explore_current_folder'
