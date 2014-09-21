@@ -32,39 +32,40 @@ class CurrentFolderFinderView extends SelectListView
                            
     # parent folder
     if @currentFolderPath.split(path.sep).length > atom.project.getRootDirectory().getRealPathSync().split(path.sep).length
-      @displayFiles.push path.dirname @currentFolderPath
+      @displayFiles.push {path: path.dirname(@currentFolderPath), parent: true}
     
     for file in fs.readdirSync(@currentFolderPath)
       fileFullPath = path.join(@currentFolderPath, file)
       if file isnt currentFileName
-        @displayFiles.push fileFullPath
+        @displayFiles.push {path: fileFullPath}
           
-    @setItems(@displayFiles)
+    @setItems @displayFiles
 
   viewForItem: (item) ->
-    stat = fs.statSync(item)
+    stat = fs.statSync(item.path)
     $$ ->
       @li class: 'two-lines', =>
-        if item is path.dirname(path.dirname(atom.workspace.getActiveEditor().getPath()))
+        if item.parent?
           @div "..", class: "primary-line file icon icon-file-directory"
         else if stat.isDirectory()
-          @div path.basename(item), class: "primary-line file icon icon-file-directory"
-          @div atom.project.relativize(item), class: 'secondary-line path no-icon'
+          @div path.basename(item.path), class: "primary-line file icon icon-file-directory"
+          @div atom.project.relativize(item.path), class: 'secondary-line path no-icon'
         else 
-          @div path.basename(item), class: "primary-line file icon icon-file-text"
-          @div atom.project.relativize(item), class: 'secondary-line path no-icon'
+          @div path.basename(item.path), class: "primary-line file icon icon-file-text"
+          @div atom.project.relativize(item.path), class: 'secondary-line path no-icon'
   
   confirmed: (item) ->
-    stat = fs.statSync(item)
+    stat = fs.statSync(item.path)
     if stat.isFile()
-      atom.workspaceView.open item
+      atom.workspaceView.open item.path
     else if stat.isDirectory()
-      @currentFolderPath = item
-      @populate()
+      @currentFolderPath = item.path
+      @toggle(false)
+      @toggle(false)
       
     
   toggle: (root) ->
-    @currentFolderPath = if root is true then atom.project.getRootDirectory().getRealPathSync() else null
+    @currentFolderPath = if root is true then atom.project.getRootDirectory().getRealPathSync() else @currentFolderPath
     if @hasParent()
       @cancel()
     else
