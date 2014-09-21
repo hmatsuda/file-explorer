@@ -65,7 +65,11 @@ class CurrentFolderFinderView extends SelectListView
       
     
   toggle: (root) ->
+    if root is false and !atom.workspace.getActiveEditor().getPath()?
+      return atom.beep()
+
     @currentFolderPath = if root is true then atom.project.getRootDirectory().getRealPathSync() else @currentFolderPath
+    
     if @hasParent()
       @cancel()
     else
