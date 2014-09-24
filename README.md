@@ -1,4 +1,4 @@
-# current-folder-finder package
+# file-explorer package
 
 A short description of your package.
 

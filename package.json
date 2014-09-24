@@ -1,10 +1,10 @@
 {
-  "name": "current-folder-finder",
-  "main": "./lib/current-folder-finder",
+  "name": "file-explorer",
+  "main": "./lib/file-explorer",
   "version": "0.0.0",
   "description": "A short description of your package",
-  "activationEvents": ["current-folder-finder:explore", "current-folder-finder:explore_current_folder"],
-  "repository": "https://github.com/hmatsuda/current-folder-finder",
+  "activationEvents": ["file-explorer:explore", "file-explorer:explore_current_folder"],
+  "repository": "https://github.com/hmatsuda/file-explorer",
   "license": "MIT",
   "engines": {
     "atom": ">0.50.0"

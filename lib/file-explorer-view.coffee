@@ -3,7 +3,7 @@ fs = require 'fs'
 {$$, SelectListView} = require 'atom'
 
 module.exports =
-class CurrentFolderFinderView extends SelectListView
+class FileExplorerView extends SelectListView
   displayFiles: []
   currentFolderPath: null
   
