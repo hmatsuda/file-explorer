@@ -8,5 +8,5 @@
 # For more detailed documentation see
 # https://atom.io/docs/latest/advanced/keymaps
 '.workspace':
-  'cmd-alt-r': 'file-explorer:explore'
-  'cmd-alt-w': 'file-explorer:explore_current_folder'
+  'cmd-alt-r': 'file-explorer:open_project_root_folder'
+  'cmd-alt-w': 'file-explorer:open_current_folder'

@@ -4,10 +4,10 @@ module.exports =
   FileExplorerView: null
 
   activate: (state) ->
-    atom.workspaceView.command 'file-explorer:explore', =>
+    atom.workspaceView.command 'file-explorer:open_project_root_folder', =>
       @createFileExplorerView().toggle(true)
 
-    atom.workspaceView.command 'file-explorer:explore_current_folder', =>
+    atom.workspaceView.command 'file-explorer:open_current_folder', =>
       @createFileExplorerView().toggle(false)
 
 

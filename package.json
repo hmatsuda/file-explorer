@@ -3,7 +3,7 @@
   "main": "./lib/file-explorer",
   "version": "0.0.0",
   "description": "A short description of your package",
-  "activationEvents": ["file-explorer:explore", "file-explorer:explore_current_folder"],
+  "activationEvents": ["file-explorer:open_project_root_folder", "file-explorer:open_current_folder"],
   "repository": "https://github.com/hmatsuda/file-explorer",
   "license": "MIT",
   "engines": {
