@@ -60,17 +60,23 @@ class FileExplorerView extends SelectListView
       atom.workspaceView.open item.path
     else if stat.isDirectory()
       @currentFolderPath = item.path
-      @toggle(false)
-      @toggle(false)
+      @openDirectory()
       
+  openDirectory: ->
+    _currentFolderPath = @currentFolderPath
+    @toggle(false)
+    @currentFolderPath = _currentFolderPath
+    @toggle(false)
+    
     
   toggle: (root) ->
-    if root is false and !atom.workspace.getActiveEditor().getPath()?
+    if root is false and !atom.workspace.getActiveEditor()?.getPath()?
       return atom.beep()
 
     @currentFolderPath = if root is true then atom.project.getRootDirectory().getRealPathSync() else @currentFolderPath
     
     if @hasParent()
+      @currentFolderPath = null
       @cancel()
     else
       @populate()
