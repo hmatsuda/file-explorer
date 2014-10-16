@@ -24,6 +24,9 @@ class FileExplorerView extends SelectListView
     @cancel()
     @remove()
     
+  getFilterKey: ->
+    'filePath'
+    
   populate: ->
     @displayFiles.length = 0
     unless @currentFolderPath?  
@@ -32,34 +35,34 @@ class FileExplorerView extends SelectListView
                            
     # parent folder
     if @currentFolderPath.split(path.sep).length > atom.project.getRootDirectory().getRealPathSync().split(path.sep).length
-      @displayFiles.push {path: path.dirname(@currentFolderPath), parent: true}
+      @displayFiles.push {filePath: path.dirname(@currentFolderPath), parent: true}
     
     for file in fs.readdirSync(@currentFolderPath)
       fileFullPath = path.join(@currentFolderPath, file)
       if file isnt currentFileName
-        @displayFiles.push {path: fileFullPath}
+        @displayFiles.push {filePath: fileFullPath}
           
     @setItems @displayFiles
 
-  viewForItem: (item) ->
-    stat = fs.statSync(item.path)
+  viewForItem: ({filePath, parent}) ->
+    stat = fs.statSync(filePath)
     $$ ->
       @li class: 'two-lines', =>
-        if item.parent?
+        if parent?
           @div "..", class: "primary-line file icon icon-file-directory"
         else if stat.isDirectory()
-          @div path.basename(item.path), class: "primary-line file icon icon-file-directory"
-          @div atom.project.relativize(item.path), class: 'secondary-line path no-icon'
+          @div path.basename(filePath), class: "primary-line file icon icon-file-directory"
+          @div atom.project.relativize(filePath), class: 'secondary-line path no-icon'
         else 
-          @div path.basename(item.path), class: "primary-line file icon icon-file-text"
-          @div atom.project.relativize(item.path), class: 'secondary-line path no-icon'
+          @div path.basename(filePath), class: "primary-line file icon icon-file-text"
+          @div atom.project.relativize(filePath), class: 'secondary-line path no-icon'
   
-  confirmed: (item) ->
-    stat = fs.statSync(item.path)
+  confirmed: ({filePath, parent}) ->
+    stat = fs.statSync(filePath)
     if stat.isFile()
-      atom.workspaceView.open item.path
+      atom.workspaceView.open filePath
     else if stat.isDirectory()
-      @currentFolderPath = item.path
+      @currentFolderPath = filePath
       @openDirectory()
       
   openDirectory: ->
