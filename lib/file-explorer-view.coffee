@@ -25,7 +25,7 @@ class FileExplorerView extends SelectListView
     @remove()
     
   getFilterKey: ->
-    'filePath'
+    'fileName'
     
   populate: ->
     @displayFiles.length = 0
@@ -35,12 +35,12 @@ class FileExplorerView extends SelectListView
                            
     # parent folder
     if @currentFolderPath.split(path.sep).length > atom.project.getRootDirectory().getRealPathSync().split(path.sep).length
-      @displayFiles.push {filePath: path.dirname(@currentFolderPath), parent: true}
+      @displayFiles.push {filePath: path.dirname(@currentFolderPath), fileName: file, parent: true}
     
     for file in fs.readdirSync(@currentFolderPath)
       fileFullPath = path.join(@currentFolderPath, file)
       if file isnt currentFileName
-        @displayFiles.push {filePath: fileFullPath}
+        @displayFiles.push {filePath: fileFullPath, fileName: file}
           
     @setItems @displayFiles
 
