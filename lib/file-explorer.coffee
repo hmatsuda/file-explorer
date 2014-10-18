@@ -2,10 +2,6 @@ FileExplorerView = require './file-explorer-view'
 
 module.exports =
   config:
-    excludeVcsIgnoredPaths:
-      type: 'boolean'
-      default: true
-      title: 'Exclude VCS Ignored Paths'
     ignoredNames:
       type: 'array'
       default: [".git", ".hg", ".svn", ".DS_Store", "Thumbs.db"]
