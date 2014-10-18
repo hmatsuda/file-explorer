@@ -108,8 +108,10 @@ class FileExplorerView extends SelectListView
       return true
     
   matchIgnores: (fileName) ->
-    currentFileName = path.basename(atom.workspace.getActiveEditor().getPath())
-    return true if fileName is currentFileName and atom.config.get("file-explorer.excludeActiveFile") is true
+    activeEditor = atom.workspace.getActiveEditor()
+    if activeEditor?.getPath()?
+      currentFileName = path.basename(activeEditor.getPath())
+      return true if fileName is currentFileName and atom.config.get("file-explorer.excludeActiveFile") is true
     
     ignoredNames = for ignores in atom.config.get("file-explorer.ignoredNames")
       new Minimatch(ignores, matchBase: true, dot: true) 
