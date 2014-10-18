@@ -20,6 +20,14 @@ describe "FileExplorer", ->
     activationPromise = atom.packages.activatePackage('file-explorer')
 
   describe "toggle-current-directory", ->
+    describe "when active editor opens other project's file", ->
+      it "beeps", ->
+        atom.workspaceView.trigger 'file-explorer:toggle-current-directory'
+      
+      # Waits until package is activated
+      waitsForPromise ->
+        activationPromise
+
     describe "when active editor opens undefined file", ->
       it "beeps", ->
         atom.workspaceView.trigger 'file-explorer:toggle-current-directory'
