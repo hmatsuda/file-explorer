@@ -1,15 +1,12 @@
 # See https://atom.io/docs/latest/creating-a-package#menus for more details
-'context-menu':
-  '.overlayer':
-      'Enable file-explorer': 'file-explorer:toggle'
-
 'menu': [
   {
     'label': 'Packages'
     'submenu': [
       'label': 'file-explorer'
       'submenu': [
-        { 'label': 'Toggle', 'command': 'file-explorer:toggle' }
+        { 'label': 'Toggle Current Directory', 'command': 'file-explorer:toggle-current-directory' }
+        { 'label': 'Toggle Home Directory', 'command': 'file-explorer:toggle-home-directory' }
       ]
     ]
   }

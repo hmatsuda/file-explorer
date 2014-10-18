@@ -4,8 +4,7 @@ fs = require 'fs'
 
 module.exports =
 class FileExplorerView extends SelectListView
-  displayFiles: []
-  currentFolderPath: null
+  selectedDirectoryPath: null
   
   initialize: ->
     super
@@ -28,21 +27,19 @@ class FileExplorerView extends SelectListView
     'fileName'
     
   populate: ->
-    @displayFiles.length = 0
-    unless @currentFolderPath?  
-      @currentFolderPath = path.dirname(atom.workspace.getActiveEditor().getPath())
+    displayFiles = []
     currentFileName = path.basename(atom.workspace.getActiveEditor().getPath())
                            
-    # parent folder
-    if @currentFolderPath.split(path.sep).length > atom.project.getRootDirectory().getRealPathSync().split(path.sep).length
-      @displayFiles.push {filePath: path.dirname(@currentFolderPath), fileName: file, parent: true}
+    # Add parent directory into list
+    if @selectedDirectoryPath.split(path.sep).length > atom.project.getRootDirectory().getRealPathSync().split(path.sep).length
+      displayFiles.push {filePath: path.dirname(@selectedDirectoryPath), fileName: file, parent: true}
     
-    for file in fs.readdirSync(@currentFolderPath)
-      fileFullPath = path.join(@currentFolderPath, file)
+    for file in fs.readdirSync(@selectedDirectoryPath)
+      fileFullPath = path.join(@selectedDirectoryPath, file)
       if file isnt currentFileName
-        @displayFiles.push {filePath: fileFullPath, fileName: file}
+        displayFiles.push {filePath: fileFullPath, fileName: file}
           
-    @setItems @displayFiles
+    @setItems displayFiles
 
   viewForItem: ({filePath, parent}) ->
     stat = fs.statSync(filePath)
@@ -61,33 +58,35 @@ class FileExplorerView extends SelectListView
     stat = fs.statSync(filePath)
     if stat.isFile()
       atom.workspaceView.open filePath
-      @currentFolderPath = null
+      @selectedDirectoryPath = null
     else if stat.isDirectory()
-      @currentFolderPath = filePath
-      @openDirectory()
+      @openDirectory(filePath)
+      @selectedDirectoryPath = filePath
       
-  openDirectory: ->
-    _currentFolderPath = @currentFolderPath
+  openDirectory: (targetDirectory) ->
     @cancel()
-    @currentFolderPath = _currentFolderPath
-    @toggle(false)
+    @toggle(targetDirectory)
     
+  toggleHomeDirectory: ->
+    @toggle(atom.project.getRootDirectory().getRealPathSync())
     
-  toggle: (root) ->
-    if root is false and !atom.workspace.getActiveEditor()?.getPath()?
+  toggleCurrentDirectory: ->
+    @toggle(path.dirname(atom.workspace.getActiveEditor().getPath()))
+    
+  toggle: (targetDirectory) ->
+    if !targetDirectory?
       return atom.beep()
 
-    @currentFolderPath = if root is true then atom.project.getRootDirectory().getRealPathSync() else @currentFolderPath
-    
     if @hasParent()
-      @currentFolderPath = null
+      @selectedDirectoryPath = null
       @cancel()
     else
+      @selectedDirectoryPath = targetDirectory
       @populate()
-      @attach() if @displayFiles?.length > 0
+      @attach()
   
   cancel: ->
-    @currentFolderPath = null
+    @selectedDirectoryPath = null
     super
       
   attach: ->
