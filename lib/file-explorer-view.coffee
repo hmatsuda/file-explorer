@@ -1,5 +1,6 @@
 path = require 'path'
 fs = require 'fs'
+{Minimatch} = require 'minimatch'
 {$$, SelectListView} = require 'atom'
 
 module.exports =
@@ -69,17 +70,13 @@ class FileExplorerView extends SelectListView
     
   populate: (selectedDirectoryPath) ->
     displayFiles = []
-    currentFileName = path.basename(atom.workspace.getActiveEditor().getPath())
                            
     unless @isProjectRoot(selectedDirectoryPath)
       displayFiles.push {filePath: path.dirname(selectedDirectoryPath), fileName: file, parent: true}
     
     for file in fs.readdirSync(selectedDirectoryPath)
       fileFullPath = path.join(selectedDirectoryPath, file)
-      if (file is currentFileName and atom.config.get("file-explorer.excludeActiveFile") is true) or
-          (atom.config.get("file-explorer.excludeVcsIgnoredPaths") is true and atom.config.get("file-explorer.ignoredNames").indexOf(file) isnt -1)
-        continue
-        
+      continue if @matchIgnores(file)
       displayFiles.push {filePath: fileFullPath, fileName: file}
           
     @setItems displayFiles
@@ -104,3 +101,12 @@ class FileExplorerView extends SelectListView
     else
       return true
     
+  matchIgnores: (fileName) ->
+    currentFileName = path.basename(atom.workspace.getActiveEditor().getPath())
+    return true if fileName is currentFileName and atom.config.get("file-explorer.excludeActiveFile") is true
+    
+    ignoredNames = for ignores in atom.config.get("file-explorer.ignoredNames")
+      new Minimatch(ignores, matchBase: true, dot: true) 
+      
+    for ignoredName in ignoredNames
+      return true if ignoredName.match(fileName)

@@ -10,5 +10,6 @@
     "atom": ">0.50.0"
   },
   "dependencies": {
+    "minimatch": "~0.3.0"
   }
 }
