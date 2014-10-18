@@ -50,7 +50,11 @@ class FileExplorerView extends SelectListView
     @toggle(atom.project.getRootDirectory().getRealPathSync())
     
   toggleCurrentDirectory: ->
-    @toggle(path.dirname(atom.workspace.getActiveEditor().getPath()))
+    activeEditor = atom.workspace.getActiveEditor()
+    if activeEditor?
+      @toggle(path.dirname(activeEditor.getPath()))
+    else
+      atom.beep()
     
   toggle: (targetDirectory) ->
     if !targetDirectory?
