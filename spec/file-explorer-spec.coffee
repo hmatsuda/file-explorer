@@ -24,25 +24,31 @@ describe "FileExplorer", ->
       it "beeps", ->
         atom.workspaceView.trigger 'file-explorer:toggle-current-directory'
       
-      # Waits until package is activated
-      waitsForPromise ->
-        activationPromise
+        # Waits until package is activated
+        waitsForPromise ->
+          activationPromise
+        
+        expect(atom.workspaceView.find('.file-explorer')).not.toExist()
 
     describe "when active editor opens undefined file", ->
       it "beeps", ->
         atom.workspaceView.trigger 'file-explorer:toggle-current-directory'
       
-      # Waits until package is activated
-      waitsForPromise ->
-        activationPromise
+        # Waits until package is activated
+        waitsForPromise ->
+          activationPromise
+
+        expect(atom.workspaceView.find('.file-explorer')).not.toExist()
 
     describe "when active editor opens no file", ->
       it "beeps", ->
         atom.workspaceView.trigger 'file-explorer:toggle-current-directory'
       
-      # Waits until package is activated
-      waitsForPromise ->
-        activationPromise
+        # Waits until package is activated
+        waitsForPromise ->
+          activationPromise
+          
+        expect(atom.workspaceView.find('.file-explorer')).not.toExist()
 
     describe "when active editor opens file", ->
       beforeEach ->
