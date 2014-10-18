@@ -8,5 +8,6 @@
 # For more detailed documentation see
 # https://atom.io/docs/latest/advanced/keymaps
 '.workspace':
-  'cmd-shift-h': 'file-explorer:open_project_root_folder'
   'cmd-alt-n': 'file-explorer:open_current_folder'
+'.file-explorer-view':
+  'cmd-shift-h': 'file-explorer:open_project_root_folder'
