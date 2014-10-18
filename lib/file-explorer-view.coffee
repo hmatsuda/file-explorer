@@ -24,25 +24,7 @@ class FileExplorerView extends SelectListView
     
   getFilterKey: ->
     'fileName'
-    
-  populate: (selectedDirectoryPath) ->
-    displayFiles = []
-    currentFileName = path.basename(atom.workspace.getActiveEditor().getPath())
-                           
-    # Add parent directory into list
-    if selectedDirectoryPath.split(path.sep).length > atom.project.getRootDirectory().getRealPathSync().split(path.sep).length
-      displayFiles.push {filePath: path.dirname(selectedDirectoryPath), fileName: file, parent: true}
-    
-    for file in fs.readdirSync(selectedDirectoryPath)
-      fileFullPath = path.join(selectedDirectoryPath, file)
-      if (file is currentFileName and atom.config.get("file-explorer.excludeActiveFile") is true) or
-          (atom.config.get("file-explorer.excludeVcsIgnoredPaths") is true and atom.config.get("file-explorer.ignoredNames").indexOf(file) isnt -1)
-        continue
-        
-      displayFiles.push {filePath: fileFullPath, fileName: file}
-          
-    @setItems displayFiles
-
+  
   viewForItem: ({filePath, parent}) ->
     stat = fs.statSync(filePath)
     $$ ->
@@ -62,11 +44,7 @@ class FileExplorerView extends SelectListView
       atom.workspaceView.open filePath
     else if stat.isDirectory()
       @openDirectory(filePath)
-      
-  openDirectory: (targetDirectory) ->
-    @cancel()
-    @toggle(targetDirectory)
-    
+
   toggleHomeDirectory: ->
     @toggle(atom.project.getRootDirectory().getRealPathSync())
     
@@ -83,11 +61,32 @@ class FileExplorerView extends SelectListView
     else
       @populate(targetDirectory)
       @attach()
-  
+      
   attach: ->
     @storeFocusedElement()
     atom.workspaceView.append(this)
     @focusFilterEditor()
+    
+  populate: (selectedDirectoryPath) ->
+    displayFiles = []
+    currentFileName = path.basename(atom.workspace.getActiveEditor().getPath())
+                           
+    unless @isProjectRoot(selectedDirectoryPath)
+      displayFiles.push {filePath: path.dirname(selectedDirectoryPath), fileName: file, parent: true}
+    
+    for file in fs.readdirSync(selectedDirectoryPath)
+      fileFullPath = path.join(selectedDirectoryPath, file)
+      if (file is currentFileName and atom.config.get("file-explorer.excludeActiveFile") is true) or
+          (atom.config.get("file-explorer.excludeVcsIgnoredPaths") is true and atom.config.get("file-explorer.ignoredNames").indexOf(file) isnt -1)
+        continue
+        
+      displayFiles.push {filePath: fileFullPath, fileName: file}
+          
+    @setItems displayFiles
+      
+  openDirectory: (targetDirectory) ->
+    @cancel()
+    @toggle(targetDirectory)
 
   splitOpenPath: (fn) ->
     filePath = @getSelectedItem() ? {}
@@ -98,3 +97,10 @@ class FileExplorerView extends SelectListView
         fn(pane, editor)
     else
       atom.workspaceView.open filePath
+
+  isProjectRoot: (selectedDirectoryPath) ->
+    if selectedDirectoryPath.split(path.sep).length > atom.project.getRootDirectory().getRealPathSync().split(path.sep).length
+      return false
+    else
+      return true
+    
