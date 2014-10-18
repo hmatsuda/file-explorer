@@ -9,7 +9,7 @@ class FileExplorerView extends SelectListView
   
   initialize: ->
     super
-    @addClass('overlay from-top file-explorer-view')
+    @addClass('overlay from-top')
         
     @subscribe this, 'pane:split-left', =>
       @splitOpenPath (pane, session) -> pane.splitLeft(session)
