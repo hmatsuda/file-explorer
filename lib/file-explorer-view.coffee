@@ -51,7 +51,7 @@ class FileExplorerView extends SelectListView
     
   toggleCurrentDirectory: ->
     activeEditor = atom.workspace.getActiveEditor()
-    if activeEditor?
+    if activeEditor?.getPath()?
       @toggle(path.dirname(activeEditor.getPath()))
     else
       atom.beep()
