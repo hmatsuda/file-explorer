@@ -4,7 +4,6 @@ fs = require 'fs'
 
 module.exports =
 class FileExplorerView extends SelectListView
-  selectedDirectoryPath: null
   
   initialize: ->
     super
@@ -26,16 +25,16 @@ class FileExplorerView extends SelectListView
   getFilterKey: ->
     'fileName'
     
-  populate: ->
+  populate: (selectedDirectoryPath) ->
     displayFiles = []
     currentFileName = path.basename(atom.workspace.getActiveEditor().getPath())
                            
     # Add parent directory into list
-    if @selectedDirectoryPath.split(path.sep).length > atom.project.getRootDirectory().getRealPathSync().split(path.sep).length
-      displayFiles.push {filePath: path.dirname(@selectedDirectoryPath), fileName: file, parent: true}
+    if selectedDirectoryPath.split(path.sep).length > atom.project.getRootDirectory().getRealPathSync().split(path.sep).length
+      displayFiles.push {filePath: path.dirname(selectedDirectoryPath), fileName: file, parent: true}
     
-    for file in fs.readdirSync(@selectedDirectoryPath)
-      fileFullPath = path.join(@selectedDirectoryPath, file)
+    for file in fs.readdirSync(selectedDirectoryPath)
+      fileFullPath = path.join(selectedDirectoryPath, file)
       if file isnt currentFileName
         displayFiles.push {filePath: fileFullPath, fileName: file}
           
@@ -58,10 +57,8 @@ class FileExplorerView extends SelectListView
     stat = fs.statSync(filePath)
     if stat.isFile()
       atom.workspaceView.open filePath
-      @selectedDirectoryPath = null
     else if stat.isDirectory()
       @openDirectory(filePath)
-      @selectedDirectoryPath = filePath
       
   openDirectory: (targetDirectory) ->
     @cancel()
@@ -78,17 +75,12 @@ class FileExplorerView extends SelectListView
       return atom.beep()
 
     if @hasParent()
-      @selectedDirectoryPath = null
+      @setItems []
       @cancel()
     else
-      @selectedDirectoryPath = targetDirectory
-      @populate()
+      @populate(targetDirectory)
       @attach()
   
-  cancel: ->
-    @selectedDirectoryPath = null
-    super
-      
   attach: ->
     @storeFocusedElement()
     atom.workspaceView.append(this)
