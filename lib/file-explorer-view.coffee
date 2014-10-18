@@ -35,7 +35,7 @@ class FileExplorerView extends SelectListView
     
     for file in fs.readdirSync(selectedDirectoryPath)
       fileFullPath = path.join(selectedDirectoryPath, file)
-      if file isnt currentFileName
+      unless file is currentFileName and atom.config.get("file-explorer.includeActiveFile") is true
         displayFiles.push {filePath: fileFullPath, fileName: file}
           
     @setItems displayFiles

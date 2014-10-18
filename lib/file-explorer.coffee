@@ -1,6 +1,11 @@
 FileExplorerView = require './file-explorer-view'
 
 module.exports =
+  config:
+    includeActiveFile:
+      type: 'boolean'
+      default: true
+  
   FileExplorerView: null
 
   activate: (state) ->
