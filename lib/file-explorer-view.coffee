@@ -68,7 +68,7 @@ class FileExplorerView extends SelectListView
       
   openDirectory: ->
     _currentFolderPath = @currentFolderPath
-    @toggle(false)
+    @cancel()
     @currentFolderPath = _currentFolderPath
     @toggle(false)
     
