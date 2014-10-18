@@ -85,6 +85,10 @@ class FileExplorerView extends SelectListView
     else
       @populate()
       @attach() if @displayFiles?.length > 0
+  
+  cancel: ->
+    @currentFolderPath = null
+    super
       
   attach: ->
     @storeFocusedElement()
