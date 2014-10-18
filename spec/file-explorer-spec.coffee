@@ -8,7 +8,7 @@ FileExplorer = require '../lib/file-explorer'
 
 describe "FileExplorer", ->
   activationPromise = null
-  [workspaceView, editor] = []
+  [fileExplorerView, workspaceView, editor] = []
 
   beforeEach ->
     # set Project Path to temporaly directory.
@@ -17,7 +17,9 @@ describe "FileExplorer", ->
     wrench.copyDirSyncRecursive(fixturesPath, tempPath, forceDelete: true)
     atom.project.setPath(tempPath)
     atom.workspaceView = new WorkspaceView
-    activationPromise = atom.packages.activatePackage('file-explorer')
+    activationPromise = atom.packages.activatePackage('file-explorer').then (pack) ->
+      fileExplorer = pack.mainModule
+      fileExplorerView = fileExplorer.createFileExplorerView()
 
   describe "toggle-current-directory", ->
     describe "when active editor opens other project's file", ->
@@ -27,7 +29,7 @@ describe "FileExplorer", ->
         # Waits until package is activated
         waitsForPromise ->
           activationPromise
-        
+
         expect(atom.workspaceView.find('.file-explorer')).not.toExist()
 
     describe "when active editor opens undefined file", ->
