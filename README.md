@@ -1,9 +1,14 @@
 # file-explorer package
 
-It provides SelectList View for accessing the project file and directory like fuzzy-finder.
+It provides SelectList View for accessing the project file and directory like File Explorer on Windows.
 - `cmd-alt-n` to open the current directory
 - `cmd-shift-h` to open the project root directory
-- `cmd-[` to go parent directory when file-explorer-view is opened
+
+When SelectListView is displayed,
+- To confirm file to open confirming file at new tab
+- To confirm directory to open confirming directory by SelectListView
+- To confirm '..' or `cmd-[` to open parent directory by SelectListView 
+
 
 
 This package uses `file-explorer.ignoredNames` config settings to filter out files and directories that will not be shown. 
