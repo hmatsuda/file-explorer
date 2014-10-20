@@ -3,6 +3,8 @@
 It provides SelectList View for accessing the project file and directory like fuzzy-finder.
 - `cmd-alt-n` to open the current directory
 - `cmd-shift-h` to open the project root directory
+- `cmd-[` to go parent directory when file-explorer-view is opened
+
 
 This package uses `file-explorer.ignoredNames` config settings to filter out files and directories that will not be shown. 
 This config settings is interpreted as arrays of minimatch glob patterns.

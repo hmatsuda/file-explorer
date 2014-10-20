@@ -5,10 +5,11 @@ fs = require 'fs'
 
 module.exports =
 class FileExplorerView extends SelectListView
+  @selectedDirectoryPath: null
   
   initialize: ->
     super
-    @addClass('overlay from-top')
+    @addClass('overlay from-top file-explorer-view')
         
     @subscribe this, 'pane:split-left', =>
       @splitOpenPath (pane, session) -> pane.splitLeft(session)
@@ -45,6 +46,12 @@ class FileExplorerView extends SelectListView
       atom.workspaceView.open filePath
     else if stat.isDirectory()
       @openDirectory(filePath)
+      
+  goParent: ->
+    if @selectedDirectoryPath is atom.project.getRootDirectory().getRealPathSync() 
+      atom.beep()
+    else
+      @openDirectory(path.dirname(@selectedDirectoryPath))
 
   toggleHomeDirectory: ->
     @toggle(atom.project.getRootDirectory().getRealPathSync())
@@ -74,14 +81,15 @@ class FileExplorerView extends SelectListView
     atom.workspaceView.append(this)
     @focusFilterEditor()
     
-  populate: (selectedDirectoryPath) ->
+  populate: (targetDirectoryPath) ->
+    @selectedDirectoryPath = targetDirectoryPath
     displayFiles = []
                            
-    unless @isProjectRoot(selectedDirectoryPath)
-      displayFiles.push {filePath: path.dirname(selectedDirectoryPath), fileName: file, parent: true}
+    unless @isProjectRoot(targetDirectoryPath)
+      displayFiles.push {filePath: path.dirname(targetDirectoryPath), fileName: file, parent: true}
     
-    for file in fs.readdirSync(selectedDirectoryPath)
-      fileFullPath = path.join(selectedDirectoryPath, file)
+    for file in fs.readdirSync(targetDirectoryPath)
+      fileFullPath = path.join(targetDirectoryPath, file)
       continue if @matchIgnores(file)
       displayFiles.push {filePath: fileFullPath, fileName: file}
           

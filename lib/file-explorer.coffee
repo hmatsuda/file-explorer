@@ -14,11 +14,17 @@ module.exports =
   FileExplorerView: null
 
   activate: (state) ->
+    fileExplorerView = @createFileExplorerView()
+      
     atom.workspaceView.command 'file-explorer:toggle-home-directory', =>
       @createFileExplorerView().toggleHomeDirectory()
 
     atom.workspaceView.command 'file-explorer:toggle-current-directory', =>
       @createFileExplorerView().toggleCurrentDirectory()
+    
+    fileExplorerView.command 'file-explorer:go-parent', =>
+      @createFileExplorerView().goParent()
+    
 
   deactivate: ->
     @fileExplorer.destroy()
