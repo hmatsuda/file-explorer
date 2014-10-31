@@ -25,6 +25,8 @@ module.exports =
     fileExplorerView.command 'file-explorer:go-parent', =>
       @createFileExplorerView().goParent()
     
+    fileExplorerView.command 'file-explorer:move-to-trash', =>
+      @createFileExplorerView().moveToTrash()
 
   deactivate: ->
     @fileExplorer.destroy()

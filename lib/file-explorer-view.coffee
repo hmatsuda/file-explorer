@@ -1,5 +1,6 @@
 path = require 'path'
 fs = require 'fs'
+shell = require 'shell'
 {Minimatch} = require 'minimatch'
 {$$, SelectListView} = require 'atom'
 
@@ -52,6 +53,20 @@ class FileExplorerView extends SelectListView
       atom.beep()
     else
       @openDirectory(path.dirname(@selectedDirectoryPath))
+  
+  moveToTrash: ->
+    item = @getSelectedItem()
+    selectedDirectoryPath = @selectedDirectoryPath
+
+    atom.confirm
+      message: "Are you sure you want to delete the selected item?"
+      detailedMessage: "You are deleting: #{item.fileName}"
+      buttons:
+        "Move to Trash": ->
+          shell.moveItemToTrash(item.filePath)
+          @openDirectory(selectedDirectoryPath)
+        "Cancel": null
+
 
   toggleHomeDirectory: ->
     @toggle(atom.project.getRootDirectory().getRealPathSync())

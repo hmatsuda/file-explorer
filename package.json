@@ -6,7 +6,8 @@
   "activationEvents": [
     "file-explorer:toggle-home-directory",
     "file-explorer:toggle-current-directory",
-    "file-explorer:go-parent"
+    "file-explorer:go-parent",
+    "file-explorer:move-to-trash"
   ],
   "repository": "https://github.com/hmatsuda/file-explorer",
   "license": "MIT",

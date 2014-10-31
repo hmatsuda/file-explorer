@@ -12,5 +12,7 @@
   'cmd-alt-n': 'file-explorer:toggle-current-directory'
 '.file-explorer-view':
   'cmd-[': 'file-explorer:go-parent'
+  'backspace': 'file-explorer:move-to-trash'
+
   
   
