@@ -90,7 +90,7 @@ class FileExplorerView extends SelectListView
     
     for file in fs.readdirSync(targetDirectoryPath)
       fileFullPath = path.join(targetDirectoryPath, file)
-      continue if @matchIgnores(file)
+      continue if @matchIgnores(fileFullPath)
       displayFiles.push {filePath: fileFullPath, fileName: file}
           
     @setItems displayFiles
@@ -115,14 +115,14 @@ class FileExplorerView extends SelectListView
     else
       return true
     
-  matchIgnores: (fileName) ->
+  matchIgnores: (fileFullPath) ->
     activeEditor = atom.workspace.getActiveEditor()
     if activeEditor?.getPath()?
-      currentFileName = path.basename(activeEditor.getPath())
-      return true if fileName is currentFileName and atom.config.get("file-explorer.excludeActiveFile") is true
+      currentFilePath = activeEditor.getPath()
+      return true if fileFullPath is currentFilePath and atom.config.get("file-explorer.excludeActiveFile") is true
     
     ignoredNames = for ignores in atom.config.get("file-explorer.ignoredNames")
       new Minimatch(ignores, matchBase: true, dot: true) 
       
     for ignoredName in ignoredNames
-      return true if ignoredName.match(fileName)
+      return true if ignoredName.match(path.basename(fileFullPath))
