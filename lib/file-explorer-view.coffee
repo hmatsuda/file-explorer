@@ -1,25 +1,16 @@
 path = require 'path'
 fs = require 'fs'
 {Minimatch} = require 'minimatch'
-{$$, SelectListView} = require 'atom'
+{$$, SelectListView} = require 'atom-space-pen-views'
 
 module.exports =
 class FileExplorerView extends SelectListView
   @selectedDirectoryPath: null
   
   initialize: ->
-    super
+    super()
     @addClass('overlay from-top file-explorer-view')
         
-    @subscribe this, 'pane:split-left', =>
-      @splitOpenPath (pane, session) -> pane.splitLeft(session)
-    @subscribe this, 'pane:split-right', =>
-      @splitOpenPath (pane, session) -> pane.splitRight(session)
-    @subscribe this, 'pane:split-down', =>
-      @splitOpenPath (pane, session) -> pane.splitDown(session)
-    @subscribe this, 'pane:split-up', =>
-      @splitOpenPath (pane, session) -> pane.splitUp(session)
-    
   destroy: ->
     @cancel()
     @remove()
@@ -40,6 +31,9 @@ class FileExplorerView extends SelectListView
           @div path.basename(filePath), class: "primary-line file icon icon-file-text"
           @div atom.project.relativize(filePath), class: 'secondary-line path no-icon'
   
+  cancelled: ->
+    @hide()
+    
   confirmed: ({filePath, parent}) ->
     stat = fs.statSync(filePath)
     if stat.isFile()
@@ -48,17 +42,17 @@ class FileExplorerView extends SelectListView
       @openDirectory(filePath)
       
   goParent: ->
-    if @selectedDirectoryPath is atom.project.getRootDirectory().getRealPathSync() 
+    if @selectedDirectoryPath is atom.project.getDirectories()[0].getRealPathSync() 
       atom.beep()
     else
       @openDirectory(path.dirname(@selectedDirectoryPath))
 
   toggleHomeDirectory: ->
-    @toggle(atom.project.getRootDirectory().getRealPathSync())
+    @toggle(atom.project.getDirectories()[0].getRealPathSync())
     
   toggleCurrentDirectory: ->
-    activeEditor = atom.workspace.getActiveEditor()
-    projectPath = atom.project.getRootDirectory().getRealPathSync()
+    activeEditor = atom.workspace.getActiveTextEditor()
+    projectPath = atom.project.getDirectories()[0].getRealPathSync()
 
     if activeEditor?.getPath()? and activeEditor.getPath().indexOf(projectPath) isnt -1
       @toggle(path.dirname(activeEditor.getPath()))
@@ -69,17 +63,21 @@ class FileExplorerView extends SelectListView
     if !targetDirectory?
       return atom.beep()
 
-    if @hasParent()
-      @setItems []
+    if @panel?.isVisible()
       @cancel()
     else
       @populate(targetDirectory)
-      @attach()
+      @show()
       
-  attach: ->
+  show: ->
+    @panel ?= atom.workspace.addModalPanel(item: this)
+    @panel.show()
+    
     @storeFocusedElement()
-    atom.workspaceView.append(this)
     @focusFilterEditor()
+    
+  hide: ->
+    @panel?.hide()
     
   populate: (targetDirectoryPath) ->
     @selectedDirectoryPath = targetDirectoryPath
@@ -99,24 +97,14 @@ class FileExplorerView extends SelectListView
     @cancel()
     @toggle(targetDirectory)
 
-  splitOpenPath: (fn) ->
-    filePath = @getSelectedItem() ? {}
-    return unless filePath
-
-    if pane = atom.workspaceView.getActivePane()
-      atom.project.open(filePath).done (editor) =>
-        fn(pane, editor)
-    else
-      atom.workspaceView.open filePath
-
   isProjectRoot: (selectedDirectoryPath) ->
-    if selectedDirectoryPath.split(path.sep).length > atom.project.getRootDirectory().getRealPathSync().split(path.sep).length
+    if selectedDirectoryPath.split(path.sep).length > atom.project.getDirectories()[0].getRealPathSync().split(path.sep).length
       return false
     else
       return true
     
   matchIgnores: (fileName) ->
-    activeEditor = atom.workspace.getActiveEditor()
+    activeEditor = atom.workspace.getActiveTextEditor()
     if activeEditor?.getPath()?
       currentFileName = path.basename(activeEditor.getPath())
       return true if fileName is currentFileName and atom.config.get("file-explorer.excludeActiveFile") is true
