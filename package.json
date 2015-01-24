@@ -1,7 +1,7 @@
 {
   "name": "file-explorer",
   "main": "./lib/file-explorer",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "It provides SelectList View for accessing the project file and directory like fuzzy-finder.",
   "activationCommands": {
     "atom-text-editor": [
