@@ -3,17 +3,19 @@
   "main": "./lib/file-explorer",
   "version": "0.1.0",
   "description": "It provides SelectList View for accessing the project file and directory like fuzzy-finder.",
-  "activationEvents": [
-    "file-explorer:toggle-home-directory",
-    "file-explorer:toggle-current-directory",
-    "file-explorer:go-parent"
-  ],
+  "activationCommands": {
+    "atom-text-editor": [
+      "file-explorer:toggle-home-directory", 
+      "file-explorer:toggle-current-directory"
+    ]
+  },
   "repository": "https://github.com/hmatsuda/file-explorer",
   "license": "MIT",
   "engines": {
     "atom": ">0.50.0"
   },
   "dependencies": {
+    "atom-space-pen-views": "^2.0.3",
     "minimatch": "~0.3.0",
     "temp": "~0.6.0",
     "wrench": "^1.5"

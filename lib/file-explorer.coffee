@@ -16,13 +16,13 @@ module.exports =
   activate: (state) ->
     fileExplorerView = @createFileExplorerView()
       
-    atom.workspaceView.command 'file-explorer:toggle-home-directory', =>
+    atom.commands.add 'atom-text-editor', 'file-explorer:toggle-home-directory', =>
       @createFileExplorerView().toggleHomeDirectory()
 
-    atom.workspaceView.command 'file-explorer:toggle-current-directory', =>
+    atom.commands.add 'atom-text-editor', 'file-explorer:toggle-current-directory', =>
       @createFileExplorerView().toggleCurrentDirectory()
     
-    fileExplorerView.command 'file-explorer:go-parent', =>
+    atom.commands.add 'atom-text-editor', 'file-explorer:go-parent', =>
       @createFileExplorerView().goParent()
     
 
