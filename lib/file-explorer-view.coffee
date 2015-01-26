@@ -37,7 +37,7 @@ class FileExplorerView extends SelectListView
   confirmed: ({filePath, parent}) ->
     stat = fs.statSync(filePath)
     if stat.isFile()
-      atom.workspaceView.open filePath
+      atom.workspace.open filePath
     else if stat.isDirectory()
       @openDirectory(filePath)
       
