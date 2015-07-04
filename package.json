@@ -3,6 +3,11 @@
   "main": "./lib/file-explorer",
   "version": "0.2.3",
   "description": "It provides SelectList View for accessing the project file and directory like fuzzy-finder.",
+  "keywords": [
+    "explorer",
+    "finder",
+    "jump"
+  ],
   "activationCommands": {
     "atom-text-editor": [
       "file-explorer:toggle-home-directory",

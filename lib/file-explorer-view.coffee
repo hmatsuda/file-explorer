@@ -88,6 +88,8 @@ class FileExplorerView extends SelectListView
     
     for file in fs.readdirSync(targetDirectoryPath)
       fileFullPath = path.join(targetDirectoryPath, file)
+      stat = fs.lstatSync(fileFullPath)
+      continue if stat.isSymbolicLink() and !fs.existsSync(fileFullPath)
       continue if @matchIgnores(file)
       displayFiles.push {filePath: fileFullPath, fileName: file}
           
