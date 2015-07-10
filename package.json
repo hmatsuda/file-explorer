@@ -1,7 +1,7 @@
 {
   "name": "file-explorer",
   "main": "./lib/file-explorer",
-  "version": "0.2.4",
+  "version": "0.3.0",
   "description": "It provides SelectList View for accessing the project file and directory like fuzzy-finder.",
   "keywords": [
     "explorer",
