@@ -10,6 +10,10 @@ module.exports =
     excludeActiveFile:
       type: 'boolean'
       default: true
+    sortBy:
+      type: 'string'
+      default: 'Folder First'
+      enum: ['Folder First', 'Name']
   
   FileExplorerView: null
 

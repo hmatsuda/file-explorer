@@ -79,19 +79,41 @@ class FileExplorerView extends SelectListView
   hide: ->
     @panel?.hide()
     
+  sortBy: (fileFullPaths) ->
+    switch atom.config.get('file-explorer.sortBy')
+      when 'Folder First'
+        fileFullPaths.sort(@sortByFolderFirst)
+      when 'Name'
+        fileFullPaths.sort()
+    
+  sortByFolderFirst: (a,b) ->
+    stat = fs.lstatSync(a)
+    if stat.isDirectory()
+      return -1
+    else
+      return 1
+
   populate: (targetDirectoryPath) ->
     @selectedDirectoryPath = targetDirectoryPath
     displayFiles = []
                            
     unless @isProjectRoot(targetDirectoryPath)
-      displayFiles.push {filePath: path.dirname(targetDirectoryPath), fileName: file, parent: true}
+      displayFiles.push {
+        filePath: path.dirname(targetDirectoryPath)
+        fileName: '..'
+        parent: true
+      }
     
-    for file in fs.readdirSync(targetDirectoryPath)
-      fileFullPath = path.join(targetDirectoryPath, file)
+    fileNames = fs.readdirSync(targetDirectoryPath)
+    fileFullPaths = for fileName in fileNames
+      path.join(targetDirectoryPath, fileName)
+    @sortBy(fileFullPaths)
+    
+    for fileFullPath in fileFullPaths
       stat = fs.lstatSync(fileFullPath)
       continue if stat.isSymbolicLink() and !fs.existsSync(fileFullPath)
-      continue if @matchIgnores(file)
-      displayFiles.push {filePath: fileFullPath, fileName: file}
+      continue if @matchIgnores(path.basename(fileFullPath))
+      displayFiles.push {filePath: fileFullPath, fileName: path.basename(fileFullPath)}
           
     @setItems displayFiles
       
