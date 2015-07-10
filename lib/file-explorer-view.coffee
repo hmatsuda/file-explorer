@@ -84,7 +84,7 @@ class FileExplorerView extends SelectListView
     displayFiles = []
                            
     unless @isProjectRoot(targetDirectoryPath)
-      displayFiles.push {filePath: path.dirname(targetDirectoryPath), fileName: file, parent: true}
+      displayFiles.push {filePath: path.dirname(targetDirectoryPath), fileName: '..', parent: true}
     
     for file in fs.readdirSync(targetDirectoryPath)
       fileFullPath = path.join(targetDirectoryPath, file)
